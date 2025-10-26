@@ -210,28 +210,28 @@ Today, we serve clients ranging from immediate family members to neighborhood pe
 ### Strategic Planning Division (Wilhelm)
 
 **Services:**
-- Quarterly family budget forecasting
-- Vacation route optimization
-- Garage organization blueprints
+- Spreadsheet warfare & budget optimization
+- Corporate restructuring consulting
+- Lawn maintenance philosophy & strategy
+- Thermostat negotiation services
+- BBQ optimization & meat selection advisory
 - "Is it worth it?" cost-benefit analysis
 - Weekend project feasibility studies
-- BBQ optimization consulting
-- Thermostat negotiation services
-- Dad joke workshop facilitation
+- Joke workshop facilitation
 
 ---
 
 ### Operations & Logistics (Nina)
 
 **Services:**
-- School supply procurement strategies
-- Carpool coordination systems
-- Meal planning for picky clients
-- Lost item recovery services (90% success rate)
-- Simultaneous appointment management
-- Laundry mountain reduction consulting
+- Calendar Tetris & scheduling optimization
+- Project management & logistics consulting
+- Finding lost things (90% success rate)
 - Emergency snack deployment
-- Sibling conflict mediation
+- Conflict resolution & mediation services
+- Evening routine efficiency auditing
+- Simultaneous appointment management
+- Operational workflow optimization
 
 ---
 

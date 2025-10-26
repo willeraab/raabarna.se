@@ -228,6 +228,11 @@ fi
 delete_result=$(delete_releases "${releases_to_delete[@]}")
 deleted_count=$(echo "${delete_result}" | cut -d':' -f1)
 failed_count=$(echo "${delete_result}" | cut -d':' -f2)
+
+# Ensure counts are set to 0 if empty
+deleted_count=${deleted_count:-0}
+failed_count=${failed_count:-0}
+
 log_info ""
 
 # Step 6: Summary
