@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
               Comprehensive Solutions from Naptime to Nasdaq
             </p>
             <p className="text-sm text-gray-500">
-              Est. 2025 • 6 Consultants • ∞ Solutions
+              Est. 2010 • 6 Consultants • ∞ Solutions
             </p>
           </div>
 
@@ -52,8 +52,7 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">Contact</h4>
             <ul className="space-y-2 text-sm">
-              <li>Email: hello@raabconsulting.com</li>
-              <li>Phone: (555) 123-4567</li>
+              <li>Email: hello@raabarna.se</li>
               <li className="pt-2">
                 <Link to="/contact" className="text-primary-400 hover:text-primary-300">
                   Get in Touch →

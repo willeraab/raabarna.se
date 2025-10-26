@@ -54,11 +54,7 @@ export const Contact: React.FC = () => {
               <div className="space-y-4 text-sm">
                 <div>
                   <p className="font-semibold text-gray-900">Email</p>
-                  <p className="text-gray-600">hello@raabconsulting.com</p>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900">Phone</p>
-                  <p className="text-gray-600">(555) 123-4567</p>
+                  <p className="text-gray-600">hello@raabarna.se</p>
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">Emergency Line</p>

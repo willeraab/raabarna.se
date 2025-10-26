@@ -21,7 +21,7 @@ export const About: React.FC = () => {
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
           <div className="prose prose-lg text-gray-600">
             <p className="mb-4">
-              Founded in 2025, Raab Consulting Group began with just two consultants and a dream.
+              Founded in 2010, Raab Consulting Group began with just two consultants and a dream.
               Through organic growth (and biology), we've expanded to a full-service consultancy
               offering expertise that ranges from corporate strategy to why the sky is blue.
             </p>
