@@ -45,19 +45,19 @@ NC='\033[0m' # No Color
 ################################################################################
 
 log_info() {
-    echo -e "${BLUE}[CLEANUP]${NC} $1"
+    echo -e "${BLUE}[CLEANUP]${NC} $1" >&2
 }
 
 log_warning() {
-    echo -e "${YELLOW}[CLEANUP]${NC} $1"
+    echo -e "${YELLOW}[CLEANUP]${NC} $1" >&2
 }
 
 log_error() {
-    echo -e "${RED}[CLEANUP]${NC} $1"
+    echo -e "${RED}[CLEANUP]${NC} $1" >&2
 }
 
 log_success() {
-    echo -e "${GREEN}[CLEANUP]${NC} $1"
+    echo -e "${GREEN}[CLEANUP]${NC} $1" >&2
 }
 
 validate_environment() {
