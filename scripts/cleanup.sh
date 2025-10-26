@@ -93,13 +93,15 @@ get_protected_releases() {
         previous_target=$(basename "${previous_target}")
 
         # Only add if different from current
-        if [[ ! " ${protected_releases[@]} " =~ " ${previous_target} " ]]; then
+        if [[ ${#protected_releases[@]} -eq 0 ]] || [[ ! " ${protected_releases[@]} " =~ " ${previous_target} " ]]; then
             protected_releases+=("${previous_target}")
             log_info "  Protected (previous): ${previous_target}"
         fi
     fi
 
-    echo "${protected_releases[@]}"
+    if [[ ${#protected_releases[@]} -gt 0 ]]; then
+        echo "${protected_releases[@]}"
+    fi
 }
 
 get_releases_to_delete() {
@@ -114,8 +116,8 @@ get_releases_to_delete() {
     local count=0
 
     for release in ${all_releases}; do
-        # Check if this release is protected
-        if [[ " ${protected_releases[@]} " =~ " ${release} " ]]; then
+        # Check if this release is protected (only if we have protected releases)
+        if [[ ${#protected_releases[@]} -gt 0 ]] && [[ " ${protected_releases[@]} " =~ " ${release} " ]]; then
             log_info "  Keeping (protected): ${release}"
             releases_to_keep+=("${release}")
             continue
@@ -132,7 +134,9 @@ get_releases_to_delete() {
         fi
     done
 
-    echo "${releases_to_delete[@]}"
+    if [[ ${#releases_to_delete[@]} -gt 0 ]]; then
+        echo "${releases_to_delete[@]}"
+    fi
 }
 
 delete_releases() {
@@ -207,11 +211,18 @@ fi
 # Step 3: Identify protected releases
 log_info "Step 3: Identifying protected releases..."
 protected_releases=($(get_protected_releases))
+if [[ ${#protected_releases[@]} -eq 0 ]]; then
+    log_warning "  No protected releases found (no current/previous symlinks)"
+fi
 log_info ""
 
 # Step 4: Determine which releases to delete
 log_info "Step 4: Analyzing releases..."
-releases_to_delete=($(get_releases_to_delete "${protected_releases[@]}"))
+if [[ ${#protected_releases[@]} -gt 0 ]]; then
+    releases_to_delete=($(get_releases_to_delete "${protected_releases[@]}"))
+else
+    releases_to_delete=($(get_releases_to_delete))
+fi
 log_info ""
 
 # Step 5: Delete old releases

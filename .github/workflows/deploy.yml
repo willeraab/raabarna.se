@@ -139,34 +139,10 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "The deployment was automatically rolled back to the previous version." >> $GITHUB_STEP_SUMMARY
 
-  approve-production:
-    name: Approve Production Deployment
-    runs-on: ubuntu-latest
-    needs: deploy-to-dev
-    if: |
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'prod' || github.event.inputs.environment == 'both'))
-    environment:
-      name: production-approval
-
-    steps:
-      - name: Verify build artifact exists
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-${{ github.ref_name }}-${{ github.sha }}
-          path: /tmp/artifact-check
-
-      - name: Approval checkpoint
-        run: |
-          echo "Manual approval required to proceed with production deployment."
-          echo "Please verify the changes on dev.raabarna.se before approving."
-          echo ""
-          echo "Build artifact verified: dist-${{ github.ref_name }}-${{ github.sha }}"
-
   deploy-to-prod:
     name: Deploy to raabarna.se
     runs-on: [self-hosted, prod-server]
-    needs: approve-production
+    needs: deploy-to-dev
     if: |
       (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'prod' || github.event.inputs.environment == 'both'))
