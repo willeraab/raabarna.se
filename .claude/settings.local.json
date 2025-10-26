@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(tree:*)",
+      "Bash(xargs:*)",
+      "Bash(yarn --version:*)",
+      "Bash(yarn install)",
+      "Bash(yarn dev)",
+      "Bash(lsof:*)",
+      "Bash(awk:*)",
+      "Bash(chmod:*)",
+      "Bash(dir /B /A-D)",
+      "Bash(yarn lint:*)",
+      "Bash(yarn build:*)",
+      "Bash(yarn add:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
