@@ -16,7 +16,9 @@
       "Bash(yarn lint:*)",
       "Bash(yarn build:*)",
       "Bash(yarn add:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

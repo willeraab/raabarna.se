@@ -1,0 +1,280 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+          - both
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run linter
+        run: yarn lint
+
+      - name: Build application
+        run: yarn build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.ref_name }}-${{ github.sha }}
+          path: dist/
+          retention-days: 30
+
+  deploy-to-dev:
+    name: Deploy to dev.raabarna.se
+    runs-on: [self-hosted, dev-server]
+    needs: build
+    if: |
+      (github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')) ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'dev' || github.event.inputs.environment == 'both'))
+    environment:
+      name: dev
+      url: https://dev.raabarna.se
+    env:
+      DEPLOY_USER: wille
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ github.ref_name }}-${{ github.sha }}
+          path: dist/
+
+      - name: Create release directory
+        id: prepare
+        run: |
+          TIMESTAMP=$(date +%s)
+          RELEASE_DIR="/var/www/raabarna.se/releases/dev/release-${TIMESTAMP}"
+          echo "release_dir=${RELEASE_DIR}" >> $GITHUB_OUTPUT
+          echo "timestamp=${TIMESTAMP}" >> $GITHUB_OUTPUT
+          mkdir -p "${RELEASE_DIR}"
+          echo "Created release directory: ${RELEASE_DIR}"
+
+      - name: Copy build to release directory
+        run: |
+          cp -r dist/* ${{ steps.prepare.outputs.release_dir }}/
+          echo "Build files copied to ${{ steps.prepare.outputs.release_dir }}"
+
+      - name: Deploy to dev (update symlinks)
+        run: |
+          bash scripts/deploy.sh \
+            "${{ steps.prepare.outputs.release_dir }}" \
+            "dev" \
+            "https://dev.raabarna.se" \
+            "${{ env.DEPLOY_USER }}"
+
+      - name: Health check
+        run: |
+          if ! bash scripts/health-check.sh "https://dev.raabarna.se"; then
+            echo "Health check failed, initiating rollback..."
+            bash scripts/rollback.sh "dev"
+            exit 1
+          fi
+          echo "Health check passed!"
+
+      - name: Dev deployment summary
+        if: success()
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "## Dev Staging Successful! :white_check_mark:" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Environment:** dev.raabarna.se (staging for production)" >> $GITHUB_STEP_SUMMARY
+            echo "**Release:** release-${{ steps.prepare.outputs.timestamp }}" >> $GITHUB_STEP_SUMMARY
+            echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo ":mag: **Next Step:** Verify changes on [dev.raabarna.se](https://dev.raabarna.se)" >> $GITHUB_STEP_SUMMARY
+            echo "After verification, approve the next step to deploy to production." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## Deployment Successful! :rocket:" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Environment:** dev.raabarna.se" >> $GITHUB_STEP_SUMMARY
+            echo "**Release:** release-${{ steps.prepare.outputs.timestamp }}" >> $GITHUB_STEP_SUMMARY
+            echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+            echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "[Visit Site](https://dev.raabarna.se)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Deployment failed
+        if: failure()
+        run: |
+          echo "## Deployment Failed :x:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** dev.raabarna.se" >> $GITHUB_STEP_SUMMARY
+          echo "**Attempted Release:** release-${{ steps.prepare.outputs.timestamp }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The deployment was automatically rolled back to the previous version." >> $GITHUB_STEP_SUMMARY
+
+  approve-production:
+    name: Approve Production Deployment
+    runs-on: ubuntu-latest
+    needs: deploy-to-dev
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'prod' || github.event.inputs.environment == 'both'))
+    environment:
+      name: production-approval
+
+    steps:
+      - name: Verify build artifact exists
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ github.ref_name }}-${{ github.sha }}
+          path: /tmp/artifact-check
+
+      - name: Approval checkpoint
+        run: |
+          echo "Manual approval required to proceed with production deployment."
+          echo "Please verify the changes on dev.raabarna.se before approving."
+          echo ""
+          echo "Build artifact verified: dist-${{ github.ref_name }}-${{ github.sha }}"
+
+  deploy-to-prod:
+    name: Deploy to raabarna.se
+    runs-on: [self-hosted, prod-server]
+    needs: approve-production
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'prod' || github.event.inputs.environment == 'both'))
+    environment:
+      name: production
+      url: https://raabarna.se
+    env:
+      DEPLOY_USER: wille
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ github.ref_name }}-${{ github.sha }}
+          path: dist/
+
+      - name: Create production release directory
+        id: prepare
+        run: |
+          TIMESTAMP=$(date +%s)
+          RELEASE_DIR="/var/www/raabarna.se/releases/prod/release-${TIMESTAMP}"
+          echo "release_dir=${RELEASE_DIR}" >> $GITHUB_OUTPUT
+          echo "timestamp=${TIMESTAMP}" >> $GITHUB_OUTPUT
+          mkdir -p "${RELEASE_DIR}"
+          echo "Created production release directory: ${RELEASE_DIR}"
+
+      - name: Copy build to production release directory
+        run: |
+          cp -r dist/* ${{ steps.prepare.outputs.release_dir }}/
+          echo "Build files copied to ${{ steps.prepare.outputs.release_dir }}"
+
+      - name: Deploy to production (update symlinks)
+        run: |
+          bash scripts/deploy.sh \
+            "${{ steps.prepare.outputs.release_dir }}" \
+            "prod" \
+            "https://raabarna.se" \
+            "${{ env.DEPLOY_USER }}"
+
+      - name: Health check production
+        run: |
+          if ! bash scripts/health-check.sh "https://raabarna.se"; then
+            echo "Health check failed on production, initiating rollback..."
+            bash scripts/rollback.sh "prod"
+            exit 1
+          fi
+          echo "Production health check passed!"
+
+      - name: Production deployment summary
+        run: |
+          echo "## Production Deployment Successful! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** raabarna.se (PRODUCTION)" >> $GITHUB_STEP_SUMMARY
+          echo "**Release:** release-${{ steps.prepare.outputs.timestamp }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[Visit Production Site](https://raabarna.se)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo ":mag: **Next Step:** Verify the production site" >> $GITHUB_STEP_SUMMARY
+          echo "After verification, approve cleanup to remove old releases." >> $GITHUB_STEP_SUMMARY
+
+  approve-cleanup:
+    name: Approve Old Release Cleanup
+    runs-on: ubuntu-latest
+    needs: deploy-to-prod
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'prod' || github.event.inputs.environment == 'both'))
+    environment:
+      name: cleanup-approval
+
+    steps:
+      - name: Cleanup approval checkpoint
+        run: |
+          echo "Manual approval required to clean up old releases."
+          echo "Please verify production (raabarna.se) is working correctly."
+          echo "After approval, old releases will be removed (keeping last 5 per environment)."
+
+  cleanup:
+    name: Cleanup Old Releases
+    runs-on: [self-hosted, prod-server]
+    needs: approve-cleanup
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.environment == 'prod' || github.event.inputs.environment == 'both'))
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Remove old dev releases
+        run: |
+          echo "Cleaning up old dev releases..."
+          bash scripts/cleanup.sh "dev" 5
+
+      - name: Remove old prod releases
+        run: |
+          echo "Cleaning up old production releases..."
+          bash scripts/cleanup.sh "prod" 5
+
+      - name: Cleanup summary
+        run: |
+          echo "## Cleanup Complete! :broom:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Old releases have been removed from both dev and prod environments." >> $GITHUB_STEP_SUMMARY
+          echo "Last 5 releases are retained in each environment for emergency rollback." >> $GITHUB_STEP_SUMMARY
