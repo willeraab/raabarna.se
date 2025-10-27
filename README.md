@@ -2,6 +2,7 @@
 
 A humorous parody consultancy website featuring a family posing as professional business consultants with absurdly varied expertise.
 
+
 ## Quick Start
 
 ```bash
