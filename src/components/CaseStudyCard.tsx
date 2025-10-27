@@ -9,11 +9,14 @@ interface CaseStudyCardProps {
 export const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ caseStudy, detailed = false }) => {
   return (
     <div className="glass-card h-full group hover:bg-white/10">
-      <h3 className="text-3xl font-bold mb-3">
+      <h3 className="text-3xl font-bold mb-6 text-center">
         <span className="gradient-text">{caseStudy.title}</span>
       </h3>
-      <div className="inline-block mb-6 px-4 py-1.5 bg-indigo-500/10 backdrop-blur-sm border border-indigo-500/20 rounded-full">
-        <span className="text-indigo-400 font-semibold text-sm tracking-wide">{caseStudy.client}</span>
+
+      <div className="flex items-center gap-4 mb-6">
+        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-indigo-500/50"></div>
+        <span className="text-indigo-400 font-semibold text-sm tracking-wide whitespace-nowrap">{caseStudy.client}</span>
+        <div className="flex-1 h-px bg-gradient-to-l from-transparent via-indigo-500/50 to-indigo-500/50"></div>
       </div>
 
       <div className="space-y-6 text-base">
