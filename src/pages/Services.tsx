@@ -66,38 +66,49 @@ export const Services: React.FC = () => {
           </AnimatedSection>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {servicePackages.map((pkg, idx) => (
-              <AnimatedSection key={idx} delay={idx * 0.1}>
-                <div
-                  className={clsx(
-                    'glass-card h-full relative',
-                    pkg.featured && 'ring-2 ring-indigo-500/50 transform scale-105 bg-white/10'
-                  )}
-                >
-                  {pkg.featured && (
-                    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold py-1 px-3 rounded-full inline-block mb-4">
-                      MOST POPULAR
-                    </div>
-                  )}
-                  <h3 className="text-2xl font-bold mb-2 text-slate-100">{pkg.name}</h3>
-                  <p className="text-3xl font-bold gradient-text mb-6">{pkg.price}</p>
-                  <ul className="space-y-3 mb-6">
-                    {pkg.features.map((feature, featureIdx) => (
-                      <li key={featureIdx} className="flex items-start text-sm text-slate-300">
-                        <span className="text-indigo-400 mr-2 flex-shrink-0">✓</span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    variant={pkg.featured ? 'primary' : 'secondary'}
-                    className="w-full"
+            {servicePackages.map((pkg, idx) => {
+              // Map package names to budget parameter values
+              const budgetParam = pkg.name.toLowerCase().includes('bronze') ? 'bronze'
+                : pkg.name.toLowerCase().includes('silver') ? 'silver'
+                : pkg.name.toLowerCase().includes('gold') ? 'gold'
+                : pkg.name.toLowerCase().includes('platinum') ? 'platinum'
+                : 'custom';
+
+              return (
+                <AnimatedSection key={idx} delay={idx * 0.1}>
+                  <div
+                    className={clsx(
+                      'glass-card h-full relative',
+                      pkg.featured && 'ring-2 ring-indigo-500/50 transform scale-105 bg-white/10'
+                    )}
                   >
-                    Select Plan
-                  </Button>
-                </div>
-              </AnimatedSection>
-            ))}
+                    {pkg.featured && (
+                      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold py-1 px-3 rounded-full inline-block mb-4">
+                        MOST POPULAR
+                      </div>
+                    )}
+                    <h3 className="text-2xl font-bold mb-2 text-slate-100">{pkg.name}</h3>
+                    <p className="text-3xl font-bold gradient-text mb-6">{pkg.price}</p>
+                    <ul className="space-y-3 mb-6">
+                      {pkg.features.map((feature, featureIdx) => (
+                        <li key={featureIdx} className="flex items-start text-sm text-slate-300">
+                          <span className="text-indigo-400 mr-2 flex-shrink-0">✓</span>
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Link to={`/contact?budget=${budgetParam}`}>
+                      <Button
+                        variant={pkg.featured ? 'primary' : 'secondary'}
+                        className="w-full"
+                      >
+                        Select Plan
+                      </Button>
+                    </Link>
+                  </div>
+                </AnimatedSection>
+              );
+            })}
           </div>
 
           <AnimatedSection className="text-center mt-12">

@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { AnimatedSection } from '../components/AnimatedSection';
 import { CaseStudyCard } from '../components/CaseStudyCard';
 import { caseStudies } from '../data/caseStudies';
+import { Button } from '../components/Button';
+import { Link } from 'react-router-dom';
 
 export const CaseStudies: React.FC = () => {
   return (
@@ -102,9 +104,9 @@ export const CaseStudies: React.FC = () => {
               Ready to become our next case study? Let's discuss how we can help
               transform your challenges into success stories.
             </p>
-            <a href="/contact" className="btn-primary inline-block px-10 py-5">
-              Start Your Project
-            </a>
+            <Link to="/contact">
+              <Button variant="primary">Start Your Project</Button>
+            </Link>
           </div>
         </AnimatedSection>
       </section>

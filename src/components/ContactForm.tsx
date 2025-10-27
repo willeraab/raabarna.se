@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Button } from './Button';
 import { consultants } from '../data/consultants';
 
 export const ContactForm: React.FC = () => {
+  const [searchParams] = useSearchParams();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,6 +16,14 @@ export const ContactForm: React.FC = () => {
     message: '',
     budget: '',
   });
+
+  // Pre-fill budget from URL parameter
+  useEffect(() => {
+    const budgetParam = searchParams.get('budget');
+    if (budgetParam) {
+      setFormData(prev => ({ ...prev, budget: budgetParam }));
+    }
+  }, [searchParams]);
 
   const [submitted, setSubmitted] = useState(false);
 
