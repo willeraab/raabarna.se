@@ -58,7 +58,9 @@ Includes login, logout, and token validation endpoints.
 
 ## Co-Authorship
 
-- Only include `Co-Authored-By` for actual human contributors
+- NEVER include `Co-Authored-By`
 - NEVER add automated tool attributions
 - If unsure, leave it out entirely
 
+## Include files
+- Always inlcde **.claude/settings.local.json** if there has been changes to it.

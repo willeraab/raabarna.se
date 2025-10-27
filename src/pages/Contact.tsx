@@ -1,16 +1,35 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { AnimatedSection } from '../components/AnimatedSection';
 import { ContactForm } from '../components/ContactForm';
 
 export const Contact: React.FC = () => {
   return (
-    <div>
+    <div className="relative">
       {/* Header Section */}
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
-        <div className="section-container text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
-          <p className="text-xl text-primary-100 max-w-3xl mx-auto">
-            Let's discuss how we can help you tackle life's challenges
-          </p>
+      <section className="relative py-16 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-purple-600/20 to-pink-600/20" />
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-20 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+        </div>
+
+        <div className="section-container text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="inline-block mb-6 px-6 py-2 bg-indigo-500/10 backdrop-blur-sm border border-indigo-500/20 rounded-full">
+              <span className="text-indigo-400 font-semibold tracking-wide">GET IN TOUCH</span>
+            </div>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
+              <span className="gradient-text">Contact Us</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+              Let's discuss how we can help you tackle life's challenges
+            </p>
+          </motion.div>
         </div>
       </section>
 
@@ -18,88 +37,103 @@ export const Contact: React.FC = () => {
       <section className="section-container">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Contact Form */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-playful shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Request a Consultation
+          <AnimatedSection className="lg:col-span-2">
+            <div className="glass-card">
+              <h2 className="text-2xl font-bold mb-6">
+                <span className="gradient-text">Request a Consultation</span>
               </h2>
-              <p className="text-gray-600 mb-8">
+              <p className="text-slate-300 mb-8">
                 Fill out the form below and one of our consultants will reach out to you
                 within 24-48 hours (depending on nap schedules).
               </p>
               <ContactForm />
             </div>
-          </div>
+          </AnimatedSection>
 
           {/* Contact Information */}
           <div className="space-y-6">
             {/* Office Hours */}
-            <div className="bg-white rounded-playful shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Office Hours</h3>
-              <div className="space-y-2 text-sm text-gray-600">
-                <p><span className="font-semibold">Monday-Friday:</span> 3:30pm - 7:00pm</p>
-                <p className="text-xs text-gray-500">(after school, before meltdowns)</p>
-                <p className="mt-3"><span className="font-semibold">Saturday:</span> 9:00am - 5:00pm</p>
-                <p className="text-xs text-gray-500">(availability varies by sports schedule)</p>
-                <p className="mt-3"><span className="font-semibold">Sunday:</span> By appointment only</p>
-                <p className="text-xs text-gray-500">(usually closed for family meetings)</p>
-                <p className="mt-3"><span className="font-semibold">Holidays:</span> Closed</p>
-                <p className="text-xs text-gray-500">(we're busy being a family)</p>
+            <AnimatedSection delay={0.2}>
+              <div className="glass-card hover:bg-white/10">
+              <h3 className="text-xl font-bold text-slate-100 mb-4">Office Hours</h3>
+              <div className="space-y-2 text-sm text-slate-300">
+                <p><span className="font-semibold text-indigo-400">Monday-Friday:</span> 3:30pm - 7:00pm</p>
+                <p className="text-xs text-slate-500">(after school, before meltdowns)</p>
+                <p className="mt-3"><span className="font-semibold text-indigo-400">Saturday:</span> 9:00am - 5:00pm</p>
+                <p className="text-xs text-slate-500">(availability varies by sports schedule)</p>
+                <p className="mt-3"><span className="font-semibold text-indigo-400">Sunday:</span> By appointment only</p>
+                <p className="text-xs text-slate-500">(usually closed for family meetings)</p>
+                <p className="mt-3"><span className="font-semibold text-indigo-400">Holidays:</span> Closed</p>
+                <p className="text-xs text-slate-500">(we're busy being a family)</p>
               </div>
-            </div>
+              </div>
+            </AnimatedSection>
 
             {/* Contact Methods */}
-            <div className="bg-white rounded-playful shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Get in Touch</h3>
-              <div className="space-y-4 text-sm">
-                <div>
-                  <p className="font-semibold text-gray-900">Email</p>
-                  <p className="text-gray-600">hello@raabarna.se</p>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900">Emergency Line</p>
-                  <p className="text-gray-600">Just come over and ring the doorbell</p>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900">Response Time</p>
-                  <p className="text-gray-600 text-xs">
-                    24-48 hours (depending on homework load, tantrum frequency,
-                    and shoe location emergencies)
-                  </p>
+            <AnimatedSection delay={0.3}>
+              <div className="glass-card hover:bg-white/10">
+                <h3 className="text-xl font-bold text-slate-100 mb-4">Get in Touch</h3>
+                <div className="space-y-4 text-sm">
+                  <div>
+                    <p className="font-semibold text-indigo-400">Email</p>
+                    <p className="text-slate-300">hello@raabarna.se</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-indigo-400">Emergency Line</p>
+                    <p className="text-slate-300">Just come over and ring the doorbell</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-indigo-400">Response Time</p>
+                    <p className="text-slate-400 text-xs">
+                      24-48 hours (depending on homework load, tantrum frequency,
+                      and shoe location emergencies)
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </AnimatedSection>
 
             {/* Office Location */}
-            <div className="bg-white rounded-playful shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Office Location</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                The Big House on Main Street<br />
-                Somewhere Nice, ST 12345
-              </p>
-              <div className="bg-gray-200 rounded-lg h-48 flex items-center justify-center">
-                <p className="text-gray-500 text-sm">Map Placeholder</p>
+            <AnimatedSection delay={0.4}>
+              <div className="glass-card hover:bg-white/10">
+                <h3 className="text-xl font-bold text-slate-100 mb-4">Office Location</h3>
+                <p className="text-slate-300 text-sm mb-4">
+                  The Big House on Main Street<br />
+                  Somewhere Nice, ST 12345
+                </p>
+                <div className="bg-slate-800/50 rounded-lg h-48 flex items-center justify-center border border-slate-700">
+                  <p className="text-slate-500 text-sm">Map Placeholder</p>
+                </div>
               </div>
-            </div>
+            </AnimatedSection>
 
             {/* Voicemail Message */}
-            <div className="bg-primary-50 rounded-playful p-6">
-              <h4 className="font-semibold text-gray-900 mb-2 text-sm">Voicemail Message:</h4>
-              <p className="text-xs text-gray-600 italic">
-                "You've reached Raab Consulting. Press 1 for Wilhelm, Press 2 for Nina,
-                Press 3 if you have snacks, or stay on the line if this can wait until naptime."
-              </p>
-            </div>
+            <AnimatedSection delay={0.5}>
+              <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-6">
+                <h4 className="font-semibold text-indigo-400 mb-2 text-sm">Voicemail Message:</h4>
+                <p className="text-xs text-slate-400 italic">
+                  "You've reached Raab Consulting. Press 1 for Wilhelm, Press 2 for Nina,
+                  Press 3 if you have snacks, or stay on the line if this can wait until naptime."
+                </p>
+              </div>
+            </AnimatedSection>
           </div>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="bg-gray-50 py-16">
-        <div className="section-container">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-            Frequently Asked Questions
-          </h2>
+      <section className="relative py-24">
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 to-slate-950/50" />
+        <div className="section-container relative z-10">
+          <AnimatedSection className="text-center mb-12">
+            <div className="inline-block mb-4 px-6 py-2 bg-purple-500/10 backdrop-blur-sm border border-purple-500/20 rounded-full">
+              <span className="text-purple-400 font-semibold tracking-wide">FAQ</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              <span className="gradient-text">Frequently Asked Questions</span>
+            </h2>
+          </AnimatedSection>
+
           <div className="max-w-3xl mx-auto space-y-6">
             {[
               {
@@ -119,10 +153,12 @@ export const Contact: React.FC = () => {
                 a: "Yes! Video calls are available, though sessions may be interrupted by requests for water, snacks, or arbitration of sibling disputes.",
               },
             ].map((faq, idx) => (
-              <div key={idx} className="bg-white rounded-lg shadow p-6">
-                <h3 className="font-bold text-gray-900 mb-2">{faq.q}</h3>
-                <p className="text-gray-600 text-sm">{faq.a}</p>
-              </div>
+              <AnimatedSection key={idx} delay={idx * 0.1}>
+                <div className="glass-card hover:bg-white/10">
+                  <h3 className="font-bold text-slate-100 mb-2">{faq.q}</h3>
+                  <p className="text-slate-400 text-sm">{faq.a}</p>
+                </div>
+              </AnimatedSection>
             ))}
           </div>
         </div>
