@@ -25,7 +25,9 @@
       "Bash(git reset:*)",
       "Bash(npx tailwindcss:*)",
       "Bash(git checkout:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(git merge:*)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": []
