@@ -7,7 +7,7 @@ export const Contact: React.FC = () => {
   return (
     <div className="relative">
       {/* Header Section */}
-      <section className="relative py-16 overflow-hidden">
+      <section className="relative py-2 overflow-hidden">
         <div className="absolute inset-0 animated-gradient-bg" />
         <div className="absolute inset-0">
           <div className="absolute top-20 left-20 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl animate-float-left" />
@@ -20,9 +20,6 @@ export const Contact: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-block mb-6 px-6 py-2 bg-indigo-500/10 backdrop-blur-sm border border-indigo-500/20 rounded-full">
-              <span className="text-indigo-400 font-semibold tracking-wide">GET IN TOUCH</span>
-            </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
               <span className="gradient-text">Contact Us</span>
             </h1>
